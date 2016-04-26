@@ -187,8 +187,13 @@
     }
 
     function calculateDragOverClass(scope, attr, evt, callback) {
-      var obj = attrGetter('ngfDragOverClass', scope, {$event: evt}), dClass = 'dragover';
-      var items = getFileItems(evt);
+      var obj = attrGetter('ngfDragOverClass', scope, {$event: evt}),
+          dClass = 'dragover',
+          types = ['Files'];
+      if(upload.shouldUpdateOn('dropUrl', attr, scope)){
+        types.push('text/html');
+      }
+      var items = getFileItems(evt, types);
       if (!items || items.length === 0) {
         return;
       }
@@ -335,11 +340,11 @@
     return ('draggable' in div) && ('ondrop' in div) && !/Edge\/12./i.test(navigator.userAgent);
   }
 
-  function getFileItems(evt) {
+  function getFileItems(evt, types) {
     var fileItems = [];
     if (evt.dataTransfer.types && evt.dataTransfer.items) {
       for (var i = 0; i < evt.dataTransfer.types.length; i++) {
-        if (evt.dataTransfer.types[i] === 'Files') {
+        if (types.indexOf(evt.dataTransfer.types[i]) > -1) {
           fileItems.push(evt.dataTransfer.items[i]);
         }
       }
