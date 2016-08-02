@@ -2308,7 +2308,11 @@ ngFileUpload.service('UploadResize', ['UploadValidate', '$q', function (UploadVa
       if (clipboard && clipboard.items) {
         for (var k = 0; k < clipboard.items.length; k++) {
           if (clipboard.items[k].type.indexOf('image') !== -1) {
-            files.push(clipboard.items[k].getAsFile());
+            var fileItem = clipboard.items[k].getAsFile();
+            //reject about size 0 file
+            if(fileItem && (fileItem.size > 0)){
+              files.push(fileItem);
+            }
           }
         }
       }
